@@ -80,11 +80,23 @@ class SnakeGame:
     def _is_collision(self):
         #hits boundary
         if self.head.x > self.w - BLOCK_SIZE or self.head.x < 0 or self.head.y > self.h - BLOCK_SIZE or self.head.y < 0 :
-            return True
+            return False
         # eats itself
         if self.head in self.snake[1:]:
             return True
 
+    def _to_other_side(self):
+        if self.head.x == 0 - BLOCK_SIZE:
+            self.head = Point(self.w,self.head.y)
+            return
+        if self.head.x == self.w :
+            self.head = Point(0- BLOCK_SIZE,self.head.y)
+
+        if self.head.y == 0 - BLOCK_SIZE:
+            self.head = Point(self.head.x,self.h)
+            return
+        if self.head.y == self.h:
+            self.head = Point(self.head.x,0- BLOCK_SIZE)
 
     def play_step(self):
         # 1. Collect User Input
@@ -112,6 +124,10 @@ class SnakeGame:
         if self._is_collision():
             game_over = True
             return game_over, self.score
+
+        # 3.1 to bounce to other side
+        self._to_other_side()
+
 
         # 4. place food
         if self.head == self.food:
